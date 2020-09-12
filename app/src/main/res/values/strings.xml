@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">UpdConnection</string>
+    <string name="league">Launch lol and log in</string>
+    <string name="chrome">Launch chrome</string>
+    <string name="screenshot">Get ScreenShot</string>
+    <string name="onmonitor">Turn on monitor</string>
+    <string name="offmoniotr">Turn off monitor</string>
+    <string name="wakepc">Wake PC</string>
+    <string name="rrpc">Restart PCe</string>
+    <string name="shutpc">Shut Down Pc</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="connection_password">Edit connection password</string>
+    <string name="mac_address">Edit server mac address</string>
+    <string name="refresh">refresh status</string>
+</resources>

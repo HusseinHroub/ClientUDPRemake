@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity" >
+
+    <Button
+        android:id="@+id/lolButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="sendMessage"
+        android:text="@string/league" />
+
+    <Button
+        android:id="@+id/chromeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="sendMessage"
+        android:text="@string/chrome" />
+
+    <Button
+        android:id="@+id/imageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="sendMessage"
+        android:text="@string/screenshot" />
+
+    <Button
+        android:id="@+id/turnOnMButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="sendMessage"
+        android:text="@string/onmonitor" />
+
+    <Button
+        android:id="@+id/turnOffMButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="sendMessage"
+        android:text="@string/offmoniotr" />
+
+    <Button
+        android:id="@+id/wakeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="sendMessage"
+        android:text="@string/wakepc" />
+
+    <Button
+        android:id="@+id/restartButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_purple"
+        android:enabled="false"
+        android:onClick="sendMessage"
+        android:text="@string/rrpc" />
+
+    <Button
+        android:id="@+id/shutButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:enabled="false"
+        android:onClick="sendMessage"
+        android:text="@string/shutpc" />
+
+
+</LinearLayout>
