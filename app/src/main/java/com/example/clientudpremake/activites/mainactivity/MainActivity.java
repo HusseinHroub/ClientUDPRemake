@@ -4,9 +4,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.clientudpremake.R;
+import com.example.clientudpremake.activites.ActivityStateObservable;
+import com.example.clientudpremake.broadcasts.BroadcastRegisterManager;
 import com.example.clientudpremake.broadcasts.wifi.WifiBroadcastReceiver;
 import com.example.clientudpremake.broadcasts.wifi.WifiStateObserver;
 import com.google.android.material.navigation.NavigationView;
@@ -14,10 +15,10 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, WifiStateObserver {
+public class MainActivity extends ActivityStateObservable implements NavigationView.OnNavigationItemSelectedListener, WifiStateObserver {
 
     private ExecutorService executorService;
-    private WifiStateManager wifiStateManager;
+    private BroadcastRegisterManager broadcastRegisterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,25 +26,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         new ToolbarHelper(this).init();
         executorService = Executors.newFixedThreadPool(5);
-        wifiStateManager = new WifiStateManager(new WifiBroadcastReceiver(this), this);
+        broadcastRegisterManager = new BroadcastRegisterManager(new WifiBroadcastReceiver(this), this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        wifiStateManager.isActivityResumed(true);
+        broadcastRegisterManager.isActivityResumed(true);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        wifiStateManager.isActivityResumed(false);
+        broadcastRegisterManager.isActivityResumed(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        wifiStateManager.isActivityResumed(false);
+        broadcastRegisterManager.isActivityResumed(false);
     }
 
     @Override
