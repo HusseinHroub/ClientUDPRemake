@@ -1,11 +1,10 @@
 package com.example.clientudpremake.broadcasts;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
 import com.example.clientudpremake.activites.ActivityStateObservable;
-import com.example.clientudpremake.activites.mainactivity.ActivityStateObserver;
+import com.example.clientudpremake.activites.ActivityStateObserver;
 
 public class BroadcastRegisterManager implements ActivityStateObserver {
     private final BroadcastReceiver broadcastReceiver;
@@ -19,20 +18,20 @@ public class BroadcastRegisterManager implements ActivityStateObserver {
     }
 
     @Override
-    public void isActivityResumed(boolean isActivityResume) {
-        if (isActivityResume) {
-            registerWifiReceiver();
+    public void onActivityStateChange(boolean isActivityResumed) {
+        if (isActivityResumed) {
+            registerReceiver();
         } else {
-            unRegisterWifiReceiver();
+            unRegisterReceiver();
         }
     }
 
-    private void registerWifiReceiver() {
-        context.registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+    private void registerReceiver() {
+        context.registerReceiver(broadcastReceiver, new IntentFilter(broadcastReceiver.getIntentAction()));
         isBroadCastRegistered = true;
     }
 
-    private void unRegisterWifiReceiver() {
+    private void unRegisterReceiver() {
         if (!isBroadCastRegistered) {
             context.unregisterReceiver(broadcastReceiver);
             isBroadCastRegistered = false;

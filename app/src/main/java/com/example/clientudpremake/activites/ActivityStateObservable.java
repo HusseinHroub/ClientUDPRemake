@@ -5,8 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.clientudpremake.activites.mainactivity.ActivityStateObserver;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +41,7 @@ public class ActivityStateObservable extends AppCompatActivity {
 
     private void notify(boolean state) {
         for (ActivityStateObserver activityStateObserver : activityStateObservers) {
-            activityStateObserver.isActivityResumed(state);
+            activityStateObserver.onActivityStateChange(state);
         }
     }
 

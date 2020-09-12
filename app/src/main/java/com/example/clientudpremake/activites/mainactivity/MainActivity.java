@@ -18,33 +18,14 @@ import java.util.concurrent.Executors;
 public class MainActivity extends ActivityStateObservable implements NavigationView.OnNavigationItemSelectedListener, WifiStateObserver {
 
     private ExecutorService executorService;
-    private BroadcastRegisterManager broadcastRegisterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new ToolbarHelper(this).init();
+        new BroadcastRegisterManager(new WifiBroadcastReceiver(this), this);
         executorService = Executors.newFixedThreadPool(5);
-        broadcastRegisterManager = new BroadcastRegisterManager(new WifiBroadcastReceiver(this), this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        broadcastRegisterManager.isActivityResumed(true);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        broadcastRegisterManager.isActivityResumed(false);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        broadcastRegisterManager.isActivityResumed(false);
     }
 
     @Override
