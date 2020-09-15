@@ -27,12 +27,14 @@ public class BroadcastRegisterManager implements ActivityStateObserver {
     }
 
     private void registerReceiver() {
-        context.registerReceiver(broadcastReceiver, new IntentFilter(broadcastReceiver.getIntentAction()));
-        isBroadCastRegistered = true;
+        if (!isBroadCastRegistered) {
+            context.registerReceiver(broadcastReceiver, new IntentFilter(broadcastReceiver.getIntentAction()));
+            isBroadCastRegistered = true;
+        }
     }
 
     private void unRegisterReceiver() {
-        if (!isBroadCastRegistered) {
+        if (isBroadCastRegistered) {
             context.unregisterReceiver(broadcastReceiver);
             isBroadCastRegistered = false;
         }

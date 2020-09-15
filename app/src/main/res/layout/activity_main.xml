@@ -8,22 +8,6 @@
     tools:context=".activities.MainActivity" >
 
     <Button
-        android:id="@+id/lolButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:onClick="sendMessage"
-        android:text="@string/league" />
-
-    <Button
-        android:id="@+id/chromeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:onClick="sendMessage"
-        android:text="@string/chrome" />
-
-    <Button
         android:id="@+id/imageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
