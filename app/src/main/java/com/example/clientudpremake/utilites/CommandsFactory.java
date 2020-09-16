@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.example.clientudpremake.R;
 import com.example.clientudpremake.commands.Command;
+import com.example.clientudpremake.commands.receivers.ServerOffReceiveCommand;
 import com.example.clientudpremake.commands.receivers.ServerOnReceiveCommand;
 import com.example.clientudpremake.commands.receivers.ServerReceiverButton;
 import com.example.clientudpremake.commands.senders.ServerSenderButton;
@@ -19,12 +20,14 @@ public class CommandsFactory {
     private static final String TURN_OFF_MONITOR_RECEIVE_MESSAGE = "monitorIsOff";
     private static final String TURN_ON_MONITOR_RECEIVE_MESSAGE = "monitorIsOn";
     private static final String SERVER_ON_RECEIVE_MESSAGE = "serverIsOn";
+    private static final String SERVER_OFF_RECEIVE_MESSAGE = "serverIsOff";
+
 
     public static Command getSenderCommand(View button) {
         switch (button.getId()) {
-            case R.id.turnOffMButton:
-                return new ServerSenderButton(button, TURN_ON_MONITOR_SEND_MESSAGE);
             case R.id.turnOnMButton:
+                return new ServerSenderButton(button, TURN_ON_MONITOR_SEND_MESSAGE);
+            case R.id.turnOffMButton:
                 return new ServerSenderButton(button, TURN_OFF_MONITOR_SEND_MESSAGE);
             case R.id.shutButton:
                 return new ServerSenderButton(button, SHUT_DOWN_SEND_MESSAGE);
@@ -43,6 +46,8 @@ public class CommandsFactory {
                 return new ServerReceiverButton(activity.findViewById(R.id.turnOnMButton), message);
             case SERVER_ON_RECEIVE_MESSAGE:
                 return new ServerOnReceiveCommand(getActivityButtons(activity));
+            case SERVER_OFF_RECEIVE_MESSAGE:
+                return new ServerOffReceiveCommand(getActivityButtons(activity));
             default:
                 throw new RuntimeException("No command found for receiving");
         }

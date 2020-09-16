@@ -3,6 +3,8 @@ package com.example.clientudpremake.workers;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.example.clientudpremake.utilites.AddressesUtility;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -30,6 +32,7 @@ public class ReceiveWorker implements Runnable {
                 DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length);
                 datagramSocket.receive(datagramPacket);
                 String message = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
+                AddressesUtility.setServerAddress(datagramPacket.getAddress());
                 handler.post(() -> receiveCommand.receive(message));
             } catch (IOException e) {
             }

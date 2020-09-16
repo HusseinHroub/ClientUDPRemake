@@ -7,7 +7,7 @@ public class AddressesUtility {
 
     private static InetAddress serverAddress;
 
-    public void setServerAddress(InetAddress serverAddress) {
+    public static void setServerAddress(InetAddress serverAddress) {
         AddressesUtility.serverAddress = serverAddress;
     }
 

@@ -11,6 +11,7 @@ import com.example.clientudpremake.activites.ActivityStateObservable;
 import com.example.clientudpremake.broadcasts.BroadcastRegisterManager;
 import com.example.clientudpremake.broadcasts.wifi.WifiBroadcastReceiver;
 import com.example.clientudpremake.broadcasts.wifi.WifiStateObserver;
+import com.example.clientudpremake.commands.senders.BroadcastSenderCommand;
 import com.example.clientudpremake.utilites.CommandsFactory;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 import com.example.clientudpremake.utilites.ToastUtility;
@@ -24,7 +25,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_drawer);
         new ToolbarHelper(this).init();
         new BroadcastRegisterManager(new WifiBroadcastReceiver(this), this);
         initReceiveWorker();
@@ -50,7 +51,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
             ToastUtility.showMessage("Wifi must be enabled in order to work.", this);
             setButtonsEnabled(false);
         } else {
-
+            new BroadcastSenderCommand("isServerOn").apply();
         }
     }
 
