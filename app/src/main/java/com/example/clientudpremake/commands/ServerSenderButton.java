@@ -9,18 +9,18 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public class SenderReceiverButton implements Sender {
+public class ServerSenderButton implements Command {
     private static final int PORT = 9999;
     private final View button;
     private final String message;
 
-    public SenderReceiverButton(View button, String message) {
+    public ServerSenderButton(View button, String message) {
         this.button = button;
         this.message = message;
     }
 
     @Override
-    public void send() {
+    public void apply() {
         button.setEnabled(false);
         ThreadsUtilty.getExecutorService().execute(this::doSend);
     }

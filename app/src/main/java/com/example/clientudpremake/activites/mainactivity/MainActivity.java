@@ -62,10 +62,10 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     }
 
     public void sendMessage(View button) {
-        CommandsFactory.getSenderCommand(button).send();
+        CommandsFactory.getSenderCommand(button).apply();
     }
 
     public void receiveMessage(String message) {
-
+        CommandsFactory.getReceiverCommand(message, this).apply();
     }
 }

@@ -1,6 +1,5 @@
-package com.example.clientudpremake.commands;
+package com.example.clientudpremake.workers;
 
 public interface Receiver {
     void receive(String message);
-
 }

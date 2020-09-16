@@ -2,7 +2,7 @@ package com.example.clientudpremake.commands;
 
 import android.view.View;
 
-public class ServerReceiverButton implements Sender {
+public class ServerReceiverButton implements Command {
     private final View button;
     private final String message;
 
@@ -12,7 +12,7 @@ public class ServerReceiverButton implements Sender {
     }
 
     @Override
-    public void send() {
+    public void apply() {
         button.setEnabled(true);
     }
 }
