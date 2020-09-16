@@ -1,6 +1,7 @@
 package com.example.clientudpremake.commands;
 
-import com.example.clientudpremake.commands.SendCommand;
+import android.view.View;
+
 import com.example.clientudpremake.utilites.AddressesUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 
@@ -8,16 +9,19 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public class ServerSender implements SendCommand {
+public class SenderReceiverButton implements Sender {
     private static final int PORT = 9999;
-    protected final String message;
+    private final View button;
+    private final String message;
 
-    public ServerSender(String message) {
+    public SenderReceiverButton(View button, String message) {
+        this.button = button;
         this.message = message;
     }
 
     @Override
     public void send() {
+        button.setEnabled(false);
         ThreadsUtilty.getExecutorService().execute(this::doSend);
     }
 

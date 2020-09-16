@@ -3,7 +3,7 @@ package com.example.clientudpremake.workers;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.example.clientudpremake.commands.ReceiveCommand;
+import com.example.clientudpremake.commands.Receiver;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -15,9 +15,9 @@ public class ReceiveWorker implements Runnable {
     private static final int PORT = 8888;
     private DatagramSocket datagramSocket;
     private Handler handler;
-    private final ReceiveCommand receiveCommand;
+    private final Receiver receiveCommand;
 
-    public ReceiveWorker(ReceiveCommand receiveCommand) throws SocketException {
+    public ReceiveWorker(Receiver receiveCommand) throws SocketException {
         handler = new Handler(Looper.getMainLooper());
         this.receiveCommand = receiveCommand;
         initSocket();

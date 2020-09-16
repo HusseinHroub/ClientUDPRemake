@@ -1,5 +1,6 @@
 package com.example.clientudpremake.commands;
 
-public interface ReceiveCommand {
+public interface Receiver {
     void receive(String message);
+
 }
