@@ -50,7 +50,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
             ToastUtility.showMessage("Wifi must be enabled in order to work.", this);
             setButtonsEnabled(false);
         } else {
-            setButtonsEnabled(true);
+
         }
     }
 

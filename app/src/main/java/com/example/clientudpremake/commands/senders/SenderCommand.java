@@ -1,34 +1,34 @@
-package com.example.clientudpremake.commands;
+package com.example.clientudpremake.commands.senders;
 
-import android.view.View;
-
-import com.example.clientudpremake.utilites.AddressesUtility;
+import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 
-public class ServerSenderButton implements Command {
+public abstract class SenderCommand implements Command {
+
     private static final int PORT = 9999;
-    private final View button;
     private final String message;
 
-    public ServerSenderButton(View button, String message) {
-        this.button = button;
+    public SenderCommand(String message) {
         this.message = message;
     }
 
     @Override
     public void apply() {
-        button.setEnabled(false);
+        preSend();
         ThreadsUtilty.getExecutorService().execute(this::doSend);
     }
+
+    protected abstract void preSend();
 
     private void doSend() {
         try {
             byte[] buffer = message.getBytes();
-            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length, AddressesUtility.getServerAddress(), PORT);
+            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length, getReceiverAddress(), PORT);
             DatagramSocket datagramSocket = new DatagramSocket();
             datagramSocket.send(datagramPacket);
             datagramSocket.close();
@@ -36,4 +36,6 @@ public class ServerSenderButton implements Command {
 
         }
     }
+
+    protected abstract InetAddress getReceiverAddress();
 }

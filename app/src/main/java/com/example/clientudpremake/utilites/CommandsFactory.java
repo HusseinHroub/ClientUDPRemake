@@ -5,9 +5,9 @@ import android.view.View;
 
 import com.example.clientudpremake.R;
 import com.example.clientudpremake.commands.Command;
-import com.example.clientudpremake.commands.ServerOnReceiveCommand;
-import com.example.clientudpremake.commands.ServerReceiverButton;
-import com.example.clientudpremake.commands.ServerSenderButton;
+import com.example.clientudpremake.commands.receivers.ServerOnReceiveCommand;
+import com.example.clientudpremake.commands.receivers.ServerReceiverButton;
+import com.example.clientudpremake.commands.senders.ServerSenderButton;
 
 public class CommandsFactory {
 
@@ -49,6 +49,9 @@ public class CommandsFactory {
     }
 
     private static View[] getActivityButtons(Activity activity) {
-        return new View[]{activity.findViewById(R.id.turnOnMButton), activity.findViewById(R.id.turnOffMButton), activity.findViewById(R.id.shutButton), activity.findViewById(R.id.restartButton)};
+        return new View[]{activity.findViewById(R.id.turnOnMButton),
+                activity.findViewById(R.id.turnOffMButton),
+                activity.findViewById(R.id.shutButton),
+                activity.findViewById(R.id.restartButton)};
     }
 }
