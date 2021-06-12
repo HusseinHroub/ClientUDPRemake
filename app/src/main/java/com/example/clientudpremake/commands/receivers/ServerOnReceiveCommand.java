@@ -9,6 +9,7 @@ import com.example.clientudpremake.workers.websocket.WebSocketManager;
 import com.neovisionaries.ws.client.WebSocketException;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class ServerOnReceiveCommand implements Command {
     private final View[] buttons;
@@ -26,13 +27,13 @@ public class ServerOnReceiveCommand implements Command {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (WebSocketException e) {
-            e.printStackTrace();
         }
 
     }
 
     private String getServerEndPoint() {
-        return String.format("ws://%s:%d/", AddressesUtility.getServerAddress().getHostAddress(), 9721);
+        return String.format(Locale.ENGLISH,
+                "ws://%s:%d/",
+                AddressesUtility.getServerAddress().getHostAddress(), 9721);
     }
 }

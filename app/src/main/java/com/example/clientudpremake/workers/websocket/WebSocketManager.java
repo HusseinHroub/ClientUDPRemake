@@ -1,5 +1,6 @@
 package com.example.clientudpremake.workers.websocket;
 
+import com.example.clientudpremake.utilites.ThreadsUtilty;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
@@ -12,13 +13,26 @@ public enum WebSocketManager {
 
     private WebSocket webSocket;
 
-    //ws://localhost:9721/
-    public void connectToServer(String serverURI, WebSocketListener webSocketListener) throws IOException, WebSocketException {
-        webSocket.disconnect();
+    public void connectToServer(String serverURI, WebSocketListener webSocketListener) throws IOException {
+        if (webSocket != null) {
+            webSocket.disconnect();
+        }
+
         webSocket = new WebSocketFactory()
                 .createSocket(serverURI)
-                .addListener(webSocketListener)
-                .connect();
+                .addListener(webSocketListener);
+        connect();
+
+    }
+
+    private void connect() {
+        ThreadsUtilty.getExecutorService().execute(() -> {
+            try {
+                webSocket.connect();
+            } catch (WebSocketException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void disconnect() {

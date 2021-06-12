@@ -11,7 +11,7 @@ public class ThreadsUtilty {
 
     }
 
-    public static ExecutorService getExecutorService() {
+    synchronized public static ExecutorService getExecutorService() {
         if (executorService == null)
             executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
         return executorService;

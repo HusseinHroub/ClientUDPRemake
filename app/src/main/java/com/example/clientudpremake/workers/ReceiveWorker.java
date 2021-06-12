@@ -12,7 +12,7 @@ import java.net.SocketException;
 
 public class ReceiveWorker implements Runnable {
 
-    private static final int PORT = 9722;
+    private static final int PORT = 9622;
     private DatagramSocket datagramSocket;
     private Handler handler;
     private final Receiver receiveCommand;

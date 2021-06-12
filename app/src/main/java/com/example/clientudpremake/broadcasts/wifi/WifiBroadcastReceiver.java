@@ -2,10 +2,14 @@ package com.example.clientudpremake.broadcasts.wifi;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 
 import com.example.clientudpremake.broadcasts.BroadcastReceiver;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class WifiBroadcastReceiver extends BroadcastReceiver {
     private final WifiStateObserver wifiStateObserver;
@@ -20,6 +24,8 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         wifiStateObserver.onWifiStatusChange(networkInfo != null && networkInfo.isConnected());
 
     }
+
+
 
     @Override
     public String getIntentAction() {
