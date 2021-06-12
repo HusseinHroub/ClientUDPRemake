@@ -19,7 +19,7 @@ public class AddressesUtility {
 
     public static InetAddress getBroadcastAddress() {
         try {
-            return InetAddress.getByName("192.168.1.255");
+            return InetAddress.getByName("192.168.0.255");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

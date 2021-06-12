@@ -10,7 +10,7 @@ import java.net.InetAddress;
 
 public abstract class SenderCommand implements Command {
 
-    private static final int PORT = 9999;
+    private static final int PORT = 9722;
     private final String message;
 
     public SenderCommand(String message) {
