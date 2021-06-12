@@ -11,14 +11,12 @@ import com.example.clientudpremake.workers.websocket.WebSocketManager;
 import java.io.IOException;
 import java.util.Locale;
 
-public class ServerOnReceiveCommand implements Command {
-    private final View[] buttons;
-    private Context context;
+import lombok.AllArgsConstructor;
 
-    public ServerOnReceiveCommand(Context context, View[] buttons) {
-        this.buttons = buttons;
-        this.context = context;
-    }
+@AllArgsConstructor
+public class ServerOnReceiveCommand implements Command {
+    private final Context context;
+    private final View[] buttons;
 
     @Override
     public void apply() {

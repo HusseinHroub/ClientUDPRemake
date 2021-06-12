@@ -9,12 +9,16 @@ import com.example.clientudpremake.commands.DummyCommand;
 import com.example.clientudpremake.commands.ToastCommand;
 import com.example.clientudpremake.commands.senders.WebSocketSenderButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class WebSocketCommandsFactory {
 
     private static final String TURN_OFF_MONITOR_MESSAGE = "turnOffMonitor";
     private static final String TURN_ON_MONITOR_MESSAGE = "turnOnMonitor";
     private static final String IS_SERVER_ON = "isServerOn";
     private static final String RESTART_MESSAGE = "restart";
+    private static final String TYPE = "type";
 
 
     public static Command getSenderCommand(View button) {
@@ -32,7 +36,8 @@ public class WebSocketCommandsFactory {
         }
     }
 
-    public static Command getReceiverCommand(Context context, String message) {
+    public static Command getReceiverCommand(Context context, JSONObject jsonObject) {
+        String message = getMessage(jsonObject);
         switch (message) {
             case TURN_OFF_MONITOR_MESSAGE:
                 return new ToastCommand(context, "Monitor is off");
@@ -41,6 +46,16 @@ public class WebSocketCommandsFactory {
             default:
                 return new DummyCommand();
         }
+    }
+
+    private static String getMessage(JSONObject jsonObject) {
+        String message = null;
+        try {
+            message = jsonObject.getString(TYPE);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return message;
     }
 
 

@@ -7,12 +7,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.clientudpremake.R;
 import com.google.android.material.navigation.NavigationView;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class ToolbarHelper {
     private final MainActivity activity;
-
-    public ToolbarHelper(MainActivity activity) {
-        this.activity = activity;
-    }
 
     public void init() {
         Toolbar toolbar = activity.findViewById(R.id.toolbar);

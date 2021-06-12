@@ -4,12 +4,12 @@ import android.view.View;
 
 import com.example.clientudpremake.commands.Command;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class ServerOffReceiveCommand implements Command {
     private final View[] buttons;
 
-    public ServerOffReceiveCommand(View[] buttons) {
-        this.buttons = buttons;
-    }
 
     @Override
     public void apply() {

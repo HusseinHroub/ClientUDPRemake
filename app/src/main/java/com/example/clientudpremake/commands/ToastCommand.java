@@ -4,13 +4,12 @@ import android.content.Context;
 
 import com.example.clientudpremake.utilites.ToastUtility;
 
-public class ToastCommand implements Command {
-    private Context context;
-    private String message;
+import lombok.AllArgsConstructor;
 
-    public ToastCommand(Context context, String message) {
-        this.context = context;
-    }
+@AllArgsConstructor
+public class ToastCommand implements Command {
+    private final Context context;
+    private final String message;
 
     @Override
     public void apply() {

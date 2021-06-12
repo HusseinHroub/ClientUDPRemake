@@ -8,14 +8,15 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public abstract class SenderCommand implements Command {
 
     private static final int PORT = 9722;
     private final String message;
 
-    public SenderCommand(String message) {
-        this.message = message;
-    }
+
 
     @Override
     public void apply() {

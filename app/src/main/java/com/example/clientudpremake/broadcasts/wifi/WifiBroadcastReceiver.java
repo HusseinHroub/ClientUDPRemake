@@ -11,12 +11,11 @@ import com.example.clientudpremake.broadcasts.BroadcastReceiver;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class WifiBroadcastReceiver extends BroadcastReceiver {
     private final WifiStateObserver wifiStateObserver;
-
-    public WifiBroadcastReceiver(WifiStateObserver wifiStateObserver) {
-        this.wifiStateObserver = wifiStateObserver;
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {

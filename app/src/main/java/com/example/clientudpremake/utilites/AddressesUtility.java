@@ -7,14 +7,13 @@ import android.net.wifi.WifiManager;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import lombok.Setter;
+
 public class AddressesUtility {
 
+    @Setter
     private static InetAddress serverAddress;
     private static InetAddress broadcastAddress;
-
-    public static void setServerAddress(InetAddress serverAddress) {
-        AddressesUtility.serverAddress = serverAddress;
-    }
 
     public static InetAddress getServerAddress() {
         if (serverAddress == null)

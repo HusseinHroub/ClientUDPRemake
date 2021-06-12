@@ -7,6 +7,9 @@ import android.os.Looper;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +23,12 @@ public class MyWSClient extends WebSocketAdapter {
 
     @Override
     public void onTextMessage(WebSocket websocket, String text) {
-        handler.post(() -> WebSocketCommandsFactory.getReceiverCommand(context, text).apply());
+        try {
+            JSONObject jsonObject = new JSONObject(text);
+            handler.post(() -> WebSocketCommandsFactory.getReceiverCommand(context, jsonObject).apply());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
