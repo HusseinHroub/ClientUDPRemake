@@ -14,8 +14,9 @@ import com.example.clientudpremake.broadcasts.wifi.WifiStateObserver;
 import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.commands.receivers.ServerOnReceiveCommand;
 import com.example.clientudpremake.commands.senders.BroadcastSenderCommand;
+import com.example.clientudpremake.popups.FadeOutPopup;
+import com.example.clientudpremake.popups.PopUps;
 import com.example.clientudpremake.utilites.AddressesUtility;
-import com.example.clientudpremake.utilites.AnimationUtils;
 import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 import com.example.clientudpremake.utilites.ToastUtility;
@@ -24,19 +25,28 @@ import com.example.clientudpremake.workers.websocket.WebSocketCommandsFactory;
 import com.google.android.material.navigation.NavigationView;
 
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends ActivityStateObservable implements NavigationView.OnNavigationItemSelectedListener, WifiStateObserver {
     private static final String IS_SERVER_ON = "isServerOn";
+    private List<PopUps> popUps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LogUtility.log("Application started");
         super.onCreate(savedInstanceState);
+        initPopups();
         setContentView(R.layout.activity_main_drawer);
         new ToolbarHelper(this).init();
         new BroadcastRegisterManager(new WifiBroadcastReceiver(this), this);
         initReceiveWorker();
 
+    }
+
+    private void initPopups() {
+        popUps = new ArrayList<>();
+        popUps.add(new FadeOutPopup(findViewById(R.id.image_container)));
     }
 
     private void initReceiveWorker() {
@@ -99,12 +109,21 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
 
     @Override
     public void onBackPressed() {
-        View view = findViewById(R.id.image_container);
-        if (view.getVisibility() == View.VISIBLE) {
-            AnimationUtils.fadeOut(view);
-        } else {
+        boolean wasPopupRemoved = removePopup();
+        if (!wasPopupRemoved) {
             super.onBackPressed();
         }
+    }
 
+    private boolean removePopup() {
+        boolean wasPopupRemoved = false;
+        for (PopUps popUps : popUps) {
+            if (popUps.isVisible()) {
+                popUps.removeVisibility();
+                wasPopupRemoved = true;
+                break;
+            }
+        }
+        return wasPopupRemoved;
     }
 }

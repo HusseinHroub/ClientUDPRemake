@@ -37,6 +37,14 @@
             android:text="@string/offmoniotr" />
 
         <Button
+            android:id="@+id/monitor_cpu_usage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="sendMessage"
+            android:text="Monitor CPU Usage" />
+
+        <Button
             android:id="@+id/wakeButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,6 +82,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CPU Usage: "
+            android:textSize="30sp" />
     </RelativeLayout>
 
 

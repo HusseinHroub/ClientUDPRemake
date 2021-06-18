@@ -17,18 +17,26 @@ public enum WebSocketManager {
     private String currentServerURI;
 
     public void connectToServer(String serverURI, WebSocketListener webSocketListener) throws IOException {
-        if (webSocket.getState() == WebSocketState.OPEN && webSocket.getURI().toString().equals(currentServerURI)) {
+        if (isAlreadyConnectedToServer()) {
             LogUtility.log("Websocket state is OPEN and same server uri, hence no need to connect again.");
-//            LogUtility.log("Websocket is not null, hence disconnecting");
-//            webSocket.disconnect();
+            return;
         }
+        doConnectToServer(serverURI, webSocketListener);
+    }
 
+    private void doConnectToServer(String serverURI, WebSocketListener webSocketListener) throws IOException {
         LogUtility.log("Connecting to websocket with serverURI: " + serverURI);
         currentServerURI = serverURI;
         webSocket = new WebSocketFactory()
                 .createSocket(serverURI)
                 .addListener(webSocketListener);
         connect();
+    }
+
+    private boolean isAlreadyConnectedToServer() {
+        return webSocket != null &&
+                webSocket.getState() == WebSocketState.OPEN &&
+                webSocket.getURI().toString().equals(currentServerURI);
     }
 
     private void connect() {
