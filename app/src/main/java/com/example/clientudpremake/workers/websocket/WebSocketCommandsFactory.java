@@ -10,7 +10,9 @@ import com.example.clientudpremake.commands.DummyCommand;
 import com.example.clientudpremake.commands.ToastCommand;
 import com.example.clientudpremake.commands.receivers.MonitorCPUUsageCommand;
 import com.example.clientudpremake.commands.receivers.ScreenShotCommand;
+import com.example.clientudpremake.commands.senders.CPUUsageSenderCommand;
 import com.example.clientudpremake.commands.senders.WebSocketSenderButton;
+import com.example.clientudpremake.models.StandardModel;
 import com.example.clientudpremake.utilites.LogUtility;
 
 import org.json.JSONException;
@@ -34,12 +36,12 @@ public class WebSocketCommandsFactory {
     public static final MonitorCPUUsageCommand monitorCPUUsageCommand = new MonitorCPUUsageCommand();
 
     static {
-        sendCommands.put(R.id.turnOnMButton, new WebSocketSenderButton(TURN_ON_MONITOR_MESSAGE));
-        sendCommands.put(R.id.turnOffMButton, new WebSocketSenderButton(TURN_OFF_MONITOR_MESSAGE));
-        sendCommands.put(R.id.shutButton, new WebSocketSenderButton(IS_SERVER_ON));
-        sendCommands.put(R.id.restartButton, new WebSocketSenderButton(RESTART_MESSAGE));
-        sendCommands.put(R.id.imageButton, new WebSocketSenderButton(CAPTURE_SCREEN_SHOT));
-        sendCommands.put(R.id.monitor_cpu_usage_button, new WebSocketSenderButton(GET_CPU_USAGE));
+        sendCommands.put(R.id.turnOnMButton, new WebSocketSenderButton(StandardModel.builder().type(TURN_ON_MONITOR_MESSAGE).build()));
+        sendCommands.put(R.id.turnOffMButton, new WebSocketSenderButton(StandardModel.builder().type(TURN_OFF_MONITOR_MESSAGE).build()));
+        sendCommands.put(R.id.shutButton, new WebSocketSenderButton(StandardModel.builder().type(IS_SERVER_ON).build()));
+        sendCommands.put(R.id.restartButton, new WebSocketSenderButton(StandardModel.builder().type(RESTART_MESSAGE).build()));
+        sendCommands.put(R.id.imageButton, new WebSocketSenderButton(StandardModel.builder().type(CAPTURE_SCREEN_SHOT).build()));
+        sendCommands.put(R.id.monitor_cpu_usage_button, new CPUUsageSenderCommand());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -48,6 +50,7 @@ public class WebSocketCommandsFactory {
     }
 
     public static Command getReceiverCommand(JSONObject jsonObject) {
+        LogUtility.log("received message commmand from websocket: " + jsonObject.toString());
         String message = getMessage(jsonObject);
         switch (message) {
             case TURN_OFF_MONITOR_MESSAGE:
@@ -64,6 +67,7 @@ public class WebSocketCommandsFactory {
             case GET_CPU_USAGE: {
                 try {
                     monitorCPUUsageCommand.setCpuValue(jsonObject.getString("value"));
+                    monitorCPUUsageCommand.setCurrentSequenceId(jsonObject.getLong("sequenceId"));
                     return monitorCPUUsageCommand;
                 } catch (JSONException e) {
                     LogUtility.log("Exception occured while setting monitorCPUUsageCommand value");
