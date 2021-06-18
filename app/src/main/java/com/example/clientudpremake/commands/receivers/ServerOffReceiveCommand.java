@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 public class ServerOffReceiveCommand implements Command {
     private final View[] buttons;
 
-
     @Override
     public void apply() {
         for (View button : buttons) {

@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.example.clientudpremake.utilites.AddressesUtility;
+import com.example.clientudpremake.utilites.LogUtility;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -34,7 +35,10 @@ public class ReceiveWorker implements Runnable {
                 String message = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
                 AddressesUtility.setServerAddress(datagramPacket.getAddress());
                 handler.post(() -> receiveCommand.receive(message));
+                LogUtility.log("Received message from UDP with content: " + message);
             } catch (IOException e) {
+                LogUtility.log("An error occurred while trying to receive from UDP connection");
+                e.printStackTrace();
             }
 
         }
@@ -42,6 +46,7 @@ public class ReceiveWorker implements Runnable {
 
     private void initSocket() throws SocketException {
         if (datagramSocket == null) {
+            LogUtility.log("UDP Socket initialized");
             datagramSocket = new DatagramSocket(PORT);
         }
     }

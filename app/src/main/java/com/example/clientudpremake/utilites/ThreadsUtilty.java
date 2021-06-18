@@ -12,8 +12,10 @@ public class ThreadsUtilty {
     }
 
     synchronized public static ExecutorService getExecutorService() {
-        if (executorService == null)
+        if (executorService == null) {
+            LogUtility.log("Executor service is null, initializing new one");
             executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+        }
         return executorService;
     }
 }

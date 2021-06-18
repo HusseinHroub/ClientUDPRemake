@@ -7,11 +7,8 @@ import android.net.wifi.WifiManager;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import lombok.Setter;
-
 public class AddressesUtility {
 
-    @Setter
     private static InetAddress serverAddress;
     private static InetAddress broadcastAddress;
 
@@ -19,6 +16,12 @@ public class AddressesUtility {
         if (serverAddress == null)
             throw new RuntimeException("Server address isn't set");
         return serverAddress;
+    }
+
+    public static void setServerAddress(InetAddress serverAddress) {
+
+        AddressesUtility.serverAddress = serverAddress;
+        LogUtility.log("Initialized server address to the value: " + serverAddress.toString());
     }
 
     public static InetAddress getBroadcastAddress() {
@@ -36,8 +39,10 @@ public class AddressesUtility {
     private static void setBroadcastAddressFromBytes(byte[] broadcastBytes) {
         try {
             AddressesUtility.broadcastAddress = InetAddress.getByAddress(broadcastBytes);
+            LogUtility.log("Broadcast address is set to the value: " + AddressesUtility.broadcastAddress.toString());
         } catch (UnknownHostException e) {
             e.printStackTrace();
+            LogUtility.log("Exception occurred while trying to set broadcast address");
             throw new RuntimeException("Error occurred while setting broadcast address");
         }
     }

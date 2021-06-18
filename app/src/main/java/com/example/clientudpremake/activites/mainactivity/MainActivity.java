@@ -15,6 +15,8 @@ import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.commands.receivers.ServerOnReceiveCommand;
 import com.example.clientudpremake.commands.senders.BroadcastSenderCommand;
 import com.example.clientudpremake.utilites.AddressesUtility;
+import com.example.clientudpremake.utilites.AnimationUtils;
+import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 import com.example.clientudpremake.utilites.ToastUtility;
 import com.example.clientudpremake.workers.ReceiveWorker;
@@ -28,6 +30,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LogUtility.log("Application started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
         new ToolbarHelper(this).init();
@@ -39,6 +42,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     private void initReceiveWorker() {
         try {
             ThreadsUtilty.getExecutorService().execute(new ReceiveWorker(this::receiveMessage));
+            LogUtility.log("Receive worked initialized");
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -52,23 +56,24 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     @Override
     public void onWifiStatusChange(boolean enabled) {
         if (!enabled) {
+            LogUtility.log("Wifi is disabled");
             ToastUtility.showMessage("Wifi must be enabled in order to work.", this);
             setButtonsEnabled(false);
         } else {
+            LogUtility.log("Wifi is enabled");
             AddressesUtility.initBroadcastAddress(this);
             new BroadcastSenderCommand("isServerOn").apply();
         }
     }
 
     private void setButtonsEnabled(boolean enabled) {
-        findViewById(R.id.turnOffMButton).setEnabled(enabled);
-        findViewById(R.id.turnOnMButton).setEnabled(enabled);
-        findViewById(R.id.shutButton).setEnabled(enabled);
-        findViewById(R.id.restartButton).setEnabled(enabled);
+        for (View view : getActivityButtons()) {
+            view.setEnabled(enabled);
+        }
     }
 
     public void sendMessage(View button) {
-        WebSocketCommandsFactory.getSenderCommand(button).apply();
+        WebSocketCommandsFactory.getSenderCommand(button.getId()).apply();
     }
 
     public void receiveMessage(String message) {
@@ -78,7 +83,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     private Command getReceiveCommand(String message) {
         switch (message) {
             case IS_SERVER_ON:
-                return new ServerOnReceiveCommand(getApplicationContext(), getActivityButtons());
+                return new ServerOnReceiveCommand(this, getActivityButtons());
             default:
                 throw new RuntimeException("No command found for receiving");
         }
@@ -88,6 +93,18 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
         return new View[]{findViewById(R.id.turnOnMButton),
                 findViewById(R.id.turnOffMButton),
                 findViewById(R.id.shutButton),
-                findViewById(R.id.restartButton)};
+                findViewById(R.id.restartButton),
+                findViewById(R.id.imageButton)};
+    }
+
+    @Override
+    public void onBackPressed() {
+        View view = findViewById(R.id.image_container);
+        if (view.getVisibility() == View.VISIBLE) {
+            AnimationUtils.fadeOut(view);
+        } else {
+            super.onBackPressed();
+        }
+
     }
 }

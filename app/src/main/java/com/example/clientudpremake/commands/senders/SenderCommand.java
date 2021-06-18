@@ -1,6 +1,7 @@
 package com.example.clientudpremake.commands.senders;
 
 import com.example.clientudpremake.commands.Command;
+import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 
 import java.io.IOException;
@@ -15,7 +16,6 @@ public abstract class SenderCommand implements Command {
 
     private static final int PORT = 9722;
     private final String message;
-
 
 
     @Override
@@ -33,8 +33,10 @@ public abstract class SenderCommand implements Command {
             DatagramSocket datagramSocket = new DatagramSocket();
             datagramSocket.send(datagramPacket);
             datagramSocket.close();
+            LogUtility.log("Sent message of data: " + message + " to server using UDP protocol");
         } catch (IOException e) {
-
+            LogUtility.log("An exception occurred while sending UDP message to server");
+            e.printStackTrace();
         }
     }
 

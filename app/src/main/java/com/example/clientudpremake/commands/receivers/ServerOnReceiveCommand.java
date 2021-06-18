@@ -1,5 +1,6 @@
 package com.example.clientudpremake.commands.receivers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
@@ -15,13 +16,13 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ServerOnReceiveCommand implements Command {
-    private final Context context;
+    private final Activity activity;
     private final View[] buttons;
 
     @Override
     public void apply() {
         try {
-            WebSocketManager.INSTANCE.connectToServer(getServerEndPoint(), new MyWSClient(context));
+            WebSocketManager.INSTANCE.connectToServer(getServerEndPoint(), new MyWSClient(activity));
             for (View button : buttons) {
                 button.setEnabled(true);
             }

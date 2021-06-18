@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class WebSocketSenderButton implements Command {
+
     private final String message;
 
     @Override
