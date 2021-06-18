@@ -16,11 +16,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ServerOnReceiveCommand implements Command {
-    private final Activity activity;
     private final View[] buttons;
 
     @Override
-    public void apply() {
+    public void apply(Activity activity) {
         try {
             WebSocketManager.INSTANCE.connectToServer(getServerEndPoint(), new MyWSClient(activity));
             for (View button : buttons) {

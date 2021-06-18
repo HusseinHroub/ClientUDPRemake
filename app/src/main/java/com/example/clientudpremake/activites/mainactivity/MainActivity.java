@@ -1,10 +1,12 @@
 package com.example.clientudpremake.activites.mainactivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.example.clientudpremake.R;
 import com.example.clientudpremake.activites.ActivityStateObservable;
@@ -14,6 +16,7 @@ import com.example.clientudpremake.broadcasts.wifi.WifiStateObserver;
 import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.commands.receivers.ServerOnReceiveCommand;
 import com.example.clientudpremake.commands.senders.BroadcastSenderCommand;
+import com.example.clientudpremake.popups.CPUMonitorPopup;
 import com.example.clientudpremake.popups.FadeOutPopup;
 import com.example.clientudpremake.popups.PopUps;
 import com.example.clientudpremake.utilites.AddressesUtility;
@@ -36,10 +39,10 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     protected void onCreate(Bundle savedInstanceState) {
         LogUtility.log("Application started");
         super.onCreate(savedInstanceState);
-        initPopups();
         setContentView(R.layout.activity_main_drawer);
         new ToolbarHelper(this).init();
         new BroadcastRegisterManager(new WifiBroadcastReceiver(this), this);
+        initPopups();
         initReceiveWorker();
 
     }
@@ -47,6 +50,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     private void initPopups() {
         popUps = new ArrayList<>();
         popUps.add(new FadeOutPopup(findViewById(R.id.image_container)));
+        popUps.add(new CPUMonitorPopup(findViewById(R.id.cpu_usage_container), WebSocketCommandsFactory.monitorCPUUsageCommand));
     }
 
     private void initReceiveWorker() {
@@ -72,7 +76,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
         } else {
             LogUtility.log("Wifi is enabled");
             AddressesUtility.initBroadcastAddress(this);
-            new BroadcastSenderCommand("isServerOn").apply();
+            new BroadcastSenderCommand("isServerOn").apply(this);
         }
     }
 
@@ -82,18 +86,19 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void sendMessage(View button) {
-        WebSocketCommandsFactory.getSenderCommand(button.getId()).apply();
+        WebSocketCommandsFactory.getSenderCommand(button.getId()).apply(this);
     }
 
     public void receiveMessage(String message) {
-        getReceiveCommand(message).apply();
+        getReceiveCommand(message).apply(this);
     }
 
     private Command getReceiveCommand(String message) {
         switch (message) {
             case IS_SERVER_ON:
-                return new ServerOnReceiveCommand(this, getActivityButtons());
+                return new ServerOnReceiveCommand(getActivityButtons());
             default:
                 throw new RuntimeException("No command found for receiving");
         }
@@ -104,7 +109,8 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
                 findViewById(R.id.turnOffMButton),
                 findViewById(R.id.shutButton),
                 findViewById(R.id.restartButton),
-                findViewById(R.id.imageButton)};
+                findViewById(R.id.imageButton),
+                findViewById(R.id.monitor_cpu_usage_button)};
     }
 
     @Override

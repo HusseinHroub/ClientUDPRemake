@@ -29,7 +29,7 @@ public class MyWSClient extends WebSocketAdapter {
     public void onTextMessage(WebSocket websocket, String text) {
         try {
             JSONObject jsonObject = new JSONObject(text);
-            handler.post(() -> WebSocketCommandsFactory.getReceiverCommand(activity, jsonObject).apply());
+            handler.post(() -> WebSocketCommandsFactory.getReceiverCommand(jsonObject).apply(activity));
         } catch (JSONException e) {
             e.printStackTrace();
         }

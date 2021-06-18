@@ -1,5 +1,6 @@
 package com.example.clientudpremake.commands.receivers;
 
+import android.app.Activity;
 import android.view.View;
 
 import com.example.clientudpremake.commands.Command;
@@ -12,7 +13,7 @@ public class ServerReceiverButton implements Command {
     private final String message;
 
     @Override
-    public void apply() {
+    public void apply(Activity activity) {
         button.setEnabled(true);
     }
 }

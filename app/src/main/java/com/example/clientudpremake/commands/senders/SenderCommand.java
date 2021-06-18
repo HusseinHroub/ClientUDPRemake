@@ -1,5 +1,7 @@
 package com.example.clientudpremake.commands.senders;
 
+import android.app.Activity;
+
 import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
@@ -19,7 +21,7 @@ public abstract class SenderCommand implements Command {
 
 
     @Override
-    public void apply() {
+    public void apply(Activity activity) {
         preSend();
         ThreadsUtilty.getExecutorService().execute(this::doSend);
     }

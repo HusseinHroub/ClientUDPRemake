@@ -1,6 +1,5 @@
 package com.example.clientudpremake.workers.websocket;
 
-import android.app.Activity;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -32,7 +31,7 @@ public class WebSocketCommandsFactory {
     public static final String GET_CPU_USAGE = "getCpuUsage";
 
     public static final Map<Integer, Command> sendCommands = new HashMap<>();
-    public static MonitorCPUUsageCommand monitorCPUUsageCommand = new MonitorCPUUsageCommand();
+    public static final MonitorCPUUsageCommand monitorCPUUsageCommand = new MonitorCPUUsageCommand();
 
     static {
         sendCommands.put(R.id.turnOnMButton, new WebSocketSenderButton(TURN_ON_MONITOR_MESSAGE));
@@ -40,7 +39,7 @@ public class WebSocketCommandsFactory {
         sendCommands.put(R.id.shutButton, new WebSocketSenderButton(IS_SERVER_ON));
         sendCommands.put(R.id.restartButton, new WebSocketSenderButton(RESTART_MESSAGE));
         sendCommands.put(R.id.imageButton, new WebSocketSenderButton(CAPTURE_SCREEN_SHOT));
-        sendCommands.put(R.id.monitor_cpu_usage, new WebSocketSenderButton(GET_CPU_USAGE));
+        sendCommands.put(R.id.monitor_cpu_usage_button, new WebSocketSenderButton(GET_CPU_USAGE));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -48,26 +47,26 @@ public class WebSocketCommandsFactory {
         return sendCommands.getOrDefault(buttonId, new DummyCommand());
     }
 
-    public static Command getReceiverCommand(Activity activity, JSONObject jsonObject) {
+    public static Command getReceiverCommand(JSONObject jsonObject) {
         String message = getMessage(jsonObject);
         switch (message) {
             case TURN_OFF_MONITOR_MESSAGE:
-                return new ToastCommand(activity, "Monitor is off");
+                return new ToastCommand("Monitor is off");
             case TURN_ON_MONITOR_MESSAGE:
-                return new ToastCommand(activity, "Monitor is on");
+                return new ToastCommand("Monitor is on");
             case CAPTURE_SCREEN_SHOT:
                 try {
-                    return new ScreenShotCommand(activity, jsonObject.getString(BINARY_IMAGE));
+                    return new ScreenShotCommand(jsonObject.getString(BINARY_IMAGE));
                 } catch (JSONException e) {
                     LogUtility.log("Exception occured while intlizing ScreenShotCOmmand");
                     e.printStackTrace();
                 }
             case GET_CPU_USAGE: {
                 try {
-                    monitorCPUUsageCommand.setActivity(activity);
-                    monitorCPUUsageCommand.setValue(jsonObject.getString("value"));
+                    monitorCPUUsageCommand.setCpuValue(jsonObject.getString("value"));
                     return monitorCPUUsageCommand;
                 } catch (JSONException e) {
+                    LogUtility.log("Exception occured while setting monitorCPUUsageCommand value");
                     e.printStackTrace();
                 }
             }

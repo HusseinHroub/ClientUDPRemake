@@ -19,12 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ScreenShotCommand implements Command {
 
-    private final Activity activity;
     private final String binaryImage;
 
     @Override
-    public void apply() {
-        byte[] byteArray = getImageInBytes();
+    public void apply(Activity activity) {
+        byte[] byteArray = getImageInBytes(activity);
         Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         PhotoView photoView = activity.findViewById(R.id.photo_view);
         photoView.setImageBitmap(bitmap);
@@ -32,7 +31,7 @@ public class ScreenShotCommand implements Command {
         LogUtility.log("Received image and viewed it..");
     }
 
-    private byte[] getImageInBytes() {
+    private byte[] getImageInBytes(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return Base64.getDecoder().decode(binaryImage);
         } else {
