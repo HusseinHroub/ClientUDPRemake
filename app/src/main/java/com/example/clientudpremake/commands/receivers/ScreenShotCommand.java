@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.view.View;
 
 import com.example.clientudpremake.R;
 import com.example.clientudpremake.commands.Command;
-import com.example.clientudpremake.utilites.AddressesUtility;
 import com.example.clientudpremake.utilites.AnimationUtils;
 import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ToastUtility;
@@ -16,9 +14,9 @@ import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.Base64;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ScreenShotCommand implements Command {
 
     private final Activity activity;
