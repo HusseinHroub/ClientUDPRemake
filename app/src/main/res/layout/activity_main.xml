@@ -7,68 +7,81 @@
     android:orientation="vertical"
     tools:context=".activites.mainactivity.MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/imageButton"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            android:onClick="sendMessage"
-            android:text="@string/screenshot" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/turnOnMButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:onClick="sendMessage"
-            android:text="@string/onmonitor" />
+            <Button
+                android:id="@+id/imageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:onClick="sendWebSocketMessage"
+                android:text="@string/screenshot" />
 
-        <Button
-            android:id="@+id/turnOffMButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:onClick="sendMessage"
-            android:text="@string/offmoniotr" />
+            <Button
+                android:id="@+id/turnOnMButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:onClick="sendWebSocketMessage"
+                android:text="@string/onmonitor" />
 
-        <Button
-            android:id="@+id/monitor_cpu_usage_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:onClick="sendMessage"
-            android:text="Monitor CPU Usage" />
+            <Button
+                android:id="@+id/turnOffMButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:onClick="sendWebSocketMessage"
+                android:text="@string/offmoniotr" />
 
-        <Button
-            android:id="@+id/wakeButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="sendMessage"
-            android:text="@string/wakepc" />
+            <Button
+                android:id="@+id/monitor_cpu_usage_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:onClick="sendWebSocketMessageForMonitor"
+                android:text="Monitor CPU Usage" />
 
-        <Button
-            android:id="@+id/restartButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_purple"
-            android:enabled="false"
-            android:onClick="sendMessage"
-            android:text="@string/rrpc" />
+            <Button
+                android:id="@+id/monitor_memory_usage_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:onClick="sendWebSocketMessageForMonitor"
+                android:text="Monitor Memory Usage" />
 
-        <Button
-            android:id="@+id/shutButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:enabled="false"
-            android:onClick="sendMessage"
-            android:text="@string/shutpc" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/wakeButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="sendWebSocketMessage"
+                android:text="@string/wakepc" />
+
+            <Button
+                android:id="@+id/restartButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_purple"
+                android:enabled="false"
+                android:onClick="sendWebSocketMessage"
+                android:text="@string/rrpc" />
+
+            <Button
+                android:id="@+id/shutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:enabled="false"
+                android:onClick="sendWebSocketMessage"
+                android:text="@string/shutpc" />
+        </LinearLayout>
+    </ScrollView>
 
     <RelativeLayout
         android:clickable="true"
@@ -87,7 +100,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/cpu_usage_container"
+        android:id="@+id/monitor_usage_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
@@ -97,10 +110,10 @@
         android:focusable="true">
 
         <TextView
-            android:id="@+id/cpu_text_view"
+            android:id="@+id/usage_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CPU Usage: "
+            android:text="Usage: "
             android:textSize="30sp" />
     </RelativeLayout>
 

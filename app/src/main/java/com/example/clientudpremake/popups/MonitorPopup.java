@@ -2,21 +2,23 @@ package com.example.clientudpremake.popups;
 
 import android.view.View;
 
-import com.example.clientudpremake.commands.receivers.MonitorCPUUsageCommand;
+import com.example.clientudpremake.monitors.AbstractMonitorUsage;
 import com.example.clientudpremake.utilites.AnimationUtils;
 import com.example.clientudpremake.utilites.LogUtility;
 
-public class CPUMonitorPopup extends PopUps {
-    private final MonitorCPUUsageCommand cpuUsageCommand;
+import java.util.function.Function;
 
-    public CPUMonitorPopup(View view, MonitorCPUUsageCommand cpuUsageCommand) {
+public class MonitorPopup extends PopUps {
+    private final Runnable stopMonitorRunnable;
+
+    public MonitorPopup(View view, Runnable stopMonitorRunnable) {
         super(view);
-        this.cpuUsageCommand = cpuUsageCommand;
+        this.stopMonitorRunnable = stopMonitorRunnable;
     }
 
     @Override
     public void removeVisibility() {
-        cpuUsageCommand.stopMonitoring();
+        stopMonitorRunnable.run();
         LogUtility.log("A popup is visible, fading it out!");
         AnimationUtils.fadeOut(view);
     }

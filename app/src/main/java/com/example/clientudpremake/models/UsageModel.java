@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CPUUsageModel {
+public class UsageModel {
     private final String type;
     private final long sequenceId;
 }

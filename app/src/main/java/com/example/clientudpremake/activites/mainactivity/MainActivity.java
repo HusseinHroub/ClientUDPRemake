@@ -16,20 +16,22 @@ import com.example.clientudpremake.broadcasts.wifi.WifiStateObserver;
 import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.commands.receivers.ServerOnReceiveCommand;
 import com.example.clientudpremake.commands.senders.BroadcastSenderCommand;
-import com.example.clientudpremake.popups.CPUMonitorPopup;
 import com.example.clientudpremake.popups.FadeOutPopup;
+import com.example.clientudpremake.popups.MonitorPopup;
 import com.example.clientudpremake.popups.PopUps;
 import com.example.clientudpremake.utilites.AddressesUtility;
 import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 import com.example.clientudpremake.utilites.ToastUtility;
 import com.example.clientudpremake.workers.ReceiveWorker;
-import com.example.clientudpremake.workers.websocket.WebSocketCommandsFactory;
 import com.google.android.material.navigation.NavigationView;
 
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.clientudpremake.workers.websocket.WebSocketCommandsFactory.getSenderCommand;
+import static com.example.clientudpremake.workers.websocket.WebSocketCommandsFactory.monitorUsages;
 
 public class MainActivity extends ActivityStateObservable implements NavigationView.OnNavigationItemSelectedListener, WifiStateObserver {
     private static final String IS_SERVER_ON = "isServerOn";
@@ -50,7 +52,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     private void initPopups() {
         popUps = new ArrayList<>();
         popUps.add(new FadeOutPopup(findViewById(R.id.image_container)));
-        popUps.add(new CPUMonitorPopup(findViewById(R.id.cpu_usage_container), WebSocketCommandsFactory.monitorCPUUsageCommand));
+        popUps.add(new MonitorPopup(findViewById(R.id.monitor_usage_container), monitorUsages::stopMonitors));
     }
 
     private void initReceiveWorker() {
@@ -87,8 +89,12 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void sendMessage(View button) {
-        WebSocketCommandsFactory.getSenderCommand(button.getId()).apply(this);
+    public void sendWebSocketMessage(View button) {
+        getSenderCommand(button.getId()).apply(this);
+    }
+
+    public void sendWebSocketMessageForMonitor(View button) {
+        monitorUsages.sendMonitorRequest(button.getId());
     }
 
     public void receiveMessage(String message) {
@@ -110,7 +116,8 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
                 findViewById(R.id.shutButton),
                 findViewById(R.id.restartButton),
                 findViewById(R.id.imageButton),
-                findViewById(R.id.monitor_cpu_usage_button)};
+                findViewById(R.id.monitor_cpu_usage_button),
+                findViewById(R.id.monitor_memory_usage_button)};
     }
 
     @Override
