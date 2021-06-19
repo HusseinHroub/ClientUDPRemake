@@ -8,7 +8,9 @@ import com.example.clientudpremake.R;
 import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.commands.DummyCommand;
 import com.example.clientudpremake.commands.ToastCommand;
+import com.example.clientudpremake.commands.receivers.LoadingDialogReceiveCommand;
 import com.example.clientudpremake.commands.receivers.ScreenShotCommand;
+import com.example.clientudpremake.commands.senders.LoadingDialogSendCommand;
 import com.example.clientudpremake.commands.senders.WebSocketSenderButton;
 import com.example.clientudpremake.models.StandardModel;
 import com.example.clientudpremake.utilites.LogUtility;
@@ -38,7 +40,7 @@ public class WebSocketCommandsFactory {
         sendCommands.put(R.id.turnOffMButton, new WebSocketSenderButton(StandardModel.builder().type(TURN_OFF_MONITOR_MESSAGE).build()));
         sendCommands.put(R.id.shutButton, new WebSocketSenderButton(StandardModel.builder().type(IS_SERVER_ON).build()));
         sendCommands.put(R.id.restartButton, new WebSocketSenderButton(StandardModel.builder().type(RESTART_MESSAGE).build()));
-        sendCommands.put(R.id.imageButton, new WebSocketSenderButton(StandardModel.builder().type(CAPTURE_SCREEN_SHOT).build()));
+        sendCommands.put(R.id.imageButton, new LoadingDialogSendCommand(new WebSocketSenderButton(StandardModel.builder().type(CAPTURE_SCREEN_SHOT).build())));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -56,7 +58,7 @@ public class WebSocketCommandsFactory {
                 return new ToastCommand("Monitor is on");
             case CAPTURE_SCREEN_SHOT:
                 try {
-                    return new ScreenShotCommand(jsonObject.getString(BINARY_IMAGE));
+                    return new LoadingDialogReceiveCommand(new ScreenShotCommand(jsonObject.getString(BINARY_IMAGE)));
                 } catch (JSONException e) {
                     LogUtility.log("Exception occured while intlizing ScreenShotCOmmand");
                     e.printStackTrace();

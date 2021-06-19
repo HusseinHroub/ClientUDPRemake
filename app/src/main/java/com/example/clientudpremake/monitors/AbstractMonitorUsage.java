@@ -63,6 +63,8 @@ abstract public class AbstractMonitorUsage {
         this.value = value;
         View container = activity.findViewById(R.id.monitor_usage_container);
         if (container.getVisibility() == View.GONE) {
+            setValueView(activity);
+            activity.findViewById(R.id.loading_dialog).setVisibility(View.GONE);
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             AnimationUtils.fadeIn(container);
             startMonitoringJob(activity);
@@ -79,13 +81,17 @@ abstract public class AbstractMonitorUsage {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void run() {
-                TextView textView = activity.findViewById(R.id.usage_text_view);
-                textView.setText(getUsageLabel() + ": " + value);
+                setValueView(activity);
                 sendNewReadingRequest();
                 LogUtility.log("Displayed new usage value and asking next value from server in: " + DELAY_AMOUNT + "ms");
                 handler.postDelayed(this, DELAY_AMOUNT);
             }
         }, DELAY_AMOUNT);
+    }
+
+    private void setValueView(Activity activity) {
+        TextView textView = activity.findViewById(R.id.usage_text_view);
+        textView.setText(getUsageLabel() + ": " + value);
     }
 
     protected abstract String getUsageLabel();

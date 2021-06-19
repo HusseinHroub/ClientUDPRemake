@@ -94,6 +94,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     }
 
     public void sendWebSocketMessageForMonitor(View button) {
+        findViewById(R.id.loading_dialog).setVisibility(View.VISIBLE);
         monitorUsages.sendMonitorRequest(button.getId());
     }
 
