@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -62,6 +63,7 @@ abstract public class AbstractMonitorUsage {
         this.value = value;
         View container = activity.findViewById(R.id.monitor_usage_container);
         if (container.getVisibility() == View.GONE) {
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             AnimationUtils.fadeIn(container);
             startMonitoringJob(activity);
             LogUtility.log("Container is not visible, fading it in, and started monitor job.");
@@ -88,8 +90,9 @@ abstract public class AbstractMonitorUsage {
 
     protected abstract String getUsageLabel();
 
-    public void stopMonitoring() {
+    public void stopMonitoring(Activity activity) {
         LogUtility.log("stopping handler of monitoring [" + getClass().getSimpleName() + "]");
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         handler.removeCallbacksAndMessages(null);
         expectedSequenceIds.clear();
     }

@@ -52,7 +52,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
     private void initPopups() {
         popUps = new ArrayList<>();
         popUps.add(new FadeOutPopup(findViewById(R.id.image_container)));
-        popUps.add(new MonitorPopup(findViewById(R.id.monitor_usage_container), monitorUsages::stopMonitors));
+        popUps.add(new MonitorPopup(findViewById(R.id.monitor_usage_container), () -> monitorUsages.stopMonitors(this)));
     }
 
     private void initReceiveWorker() {

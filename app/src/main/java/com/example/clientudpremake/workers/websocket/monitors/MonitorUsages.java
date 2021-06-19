@@ -48,9 +48,9 @@ public class MonitorUsages {
         getMonitorUsage(id).sendNewReadingRequest();
     }
 
-    public void stopMonitors() {
-        monitorCPUUsage.stopMonitoring();
-        monitorMemoryUsage.stopMonitoring();
+    public void stopMonitors(Activity activity) {
+        monitorCPUUsage.stopMonitoring(activity);
+        monitorMemoryUsage.stopMonitoring(activity);
     }
 
     private AbstractMonitorUsage getMonitorUsage(int buttonId) {

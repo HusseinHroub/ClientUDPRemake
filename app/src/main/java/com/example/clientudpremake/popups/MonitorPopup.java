@@ -2,11 +2,8 @@ package com.example.clientudpremake.popups;
 
 import android.view.View;
 
-import com.example.clientudpremake.monitors.AbstractMonitorUsage;
 import com.example.clientudpremake.utilites.AnimationUtils;
 import com.example.clientudpremake.utilites.LogUtility;
-
-import java.util.function.Function;
 
 public class MonitorPopup extends PopUps {
     private final Runnable stopMonitorRunnable;
