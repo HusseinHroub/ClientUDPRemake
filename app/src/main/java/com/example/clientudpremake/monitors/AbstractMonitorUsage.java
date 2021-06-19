@@ -26,6 +26,8 @@ abstract public class AbstractMonitorUsage {
     private final Set<Long> expectedSequenceIds;
     private final Handler handler;
 
+    private String value;
+
     public AbstractMonitorUsage() {
         handler = new Handler();
         expectedSequenceIds = new HashSet<>();
@@ -57,10 +59,11 @@ abstract public class AbstractMonitorUsage {
     }
 
     private void processValueView(Activity activity, String value) {
+        this.value = value;
         View container = activity.findViewById(R.id.monitor_usage_container);
         if (container.getVisibility() == View.GONE) {
             AnimationUtils.fadeIn(container);
-            startMonitoringJob(activity, value);
+            startMonitoringJob(activity);
             LogUtility.log("Container is not visible, fading it in, and started monitor job.");
         }
     }
@@ -69,7 +72,7 @@ abstract public class AbstractMonitorUsage {
         return expectedSequenceIds.contains(currentSequenceId);
     }
 
-    private void startMonitoringJob(Activity activity, String value) {
+    private void startMonitoringJob(Activity activity) {
         handler.postDelayed(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -86,7 +89,7 @@ abstract public class AbstractMonitorUsage {
     protected abstract String getUsageLabel();
 
     public void stopMonitoring() {
-        LogUtility.log("stopping handler of monitoring");
+        LogUtility.log("stopping handler of monitoring [" + getClass().getSimpleName() + "]");
         handler.removeCallbacksAndMessages(null);
         expectedSequenceIds.clear();
     }
