@@ -13,28 +13,35 @@ import com.example.clientudpremake.R;
 import com.example.clientudpremake.models.FileTransferModel;
 import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
+import com.example.clientudpremake.utilites.ToastUtility;
 import com.example.clientudpremake.workers.websocket.WebSocketManager;
 import com.google.gson.Gson;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketFrame;
 
 import org.apache.commons.codec.binary.Base64;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import lombok.RequiredArgsConstructor;
 
-public class FileTransferManager {
+public class FileTransferManager extends WebSocketAdapter {
     private static final int BYTES_PER_SPLIT = 8 * 1024;
     private final Activity activity;
     private final Uri uri;
     private Handler handler;
     private long id;
+    private ProgressBar progressBar;
+    private View progressBarDialog;
 
     public FileTransferManager(Activity activity, Uri uri) {
         this.activity = activity;
         this.uri = uri;
         this.handler = new Handler(activity.getMainLooper());
         id = System.nanoTime();
+        progressBar = activity.findViewById(R.id.progress_bar_hor);
+        progressBarDialog = activity.findViewById(R.id.progress_dialog);
     }
 
     public void sendFileToServer() {
@@ -83,10 +90,9 @@ public class FileTransferManager {
     private void startSendingProcess(FileInformation fileInformation) {
         final TextView textView = activity.findViewById(R.id.sending_file_text_view);
         handler.post(() -> textView.setText("Sending File: " + fileInformation.fileName));
-        final View progressBarDialog = activity.findViewById(R.id.progress_dialog);
+        WebSocketManager.INSTANCE.getWebSocket().addListener(this);
         try (InputStream inputStream = activity.getContentResolver().openInputStream(uri)) {
             handler.post(() -> progressBarDialog.setVisibility(View.VISIBLE));
-            ProgressBar progressBar = activity.findViewById(R.id.progress_bar_hor);
             progressBar.setProgress(0);
             long fileSize = fileInformation.fileSize;
             int bytesPerSplit = BYTES_PER_SPLIT;
@@ -98,7 +104,6 @@ public class FileTransferManager {
                 if (inputStream.read(buf) != -1) {
                     String json = new Gson().toJson(new FileTransferModel(Base64.encodeBase64String(buf), fileInformation.fileName, i, latestFrame, id));
                     WebSocketManager.INSTANCE.sendText(json);
-                    updateProgressBar(progressBar, i, numberOfSplits);
                 } else {
                     LogUtility.log(("Finished all splits with no remaining"));
                     break;
@@ -117,13 +122,25 @@ public class FileTransferManager {
         } catch (Exception e) {
             LogUtility.log("An exception occurred while trying to send file: " + fileInformation.fileName + " to server: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            handler.post(() -> progressBarDialog.setVisibility(View.GONE));
         }
     }
 
-    private void updateProgressBar(final ProgressBar progressBar, final long splitId, final long totalSplits) {
-        handler.post(() -> progressBar.setProgress((int) (splitId / (double) totalSplits) * 100));
+    private void updateProgressBar(final long splitId, final long totalSplits) {
+        handler.post(() -> progressBar.setProgress((int) ((splitId / (double) totalSplits) * 100)));
+    }
+
+    @Override
+    public void onFrameSent(WebSocket websocket, WebSocketFrame frame) {
+        FileTransferModel fileTransferModel = new Gson().fromJson(frame.getPayloadText(), FileTransferModel.class);
+        updateProgressBar(fileTransferModel.getFrame(), fileTransferModel.getLatestFrame());
+        if (fileTransferModel.getFrame() == fileTransferModel.getLatestFrame()) {
+            WebSocketManager.INSTANCE.getWebSocket().removeListener(this);
+            handler.post(() -> {
+                progressBarDialog.setVisibility(View.GONE);
+                ToastUtility.showMessage("File sent successfully", activity);
+            });
+            LogUtility.log("Removing listener as received last frame!");
+        }
     }
 
     @RequiredArgsConstructor

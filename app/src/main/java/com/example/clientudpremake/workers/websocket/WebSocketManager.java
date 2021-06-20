@@ -51,12 +51,11 @@ public enum WebSocketManager {
         });
     }
 
-    public void disconnect() {
-        webSocket.disconnect();
+    public WebSocket getWebSocket() {
+        return webSocket;
     }
 
     public void sendText(String text) {
-        LogUtility.log("Sending: " + text + " to websocket");
         webSocket.sendText(text);
     }
 }

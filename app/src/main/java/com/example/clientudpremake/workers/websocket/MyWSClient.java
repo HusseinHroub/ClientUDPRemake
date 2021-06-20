@@ -41,6 +41,11 @@ public class MyWSClient extends WebSocketAdapter {
     }
 
     @Override
+    public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
+        LogUtility.log("Sent frame: " + frame.getPayloadText());
+    }
+
+    @Override
     public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
         LogUtility.log("Disconnected from webscoket");
         super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
