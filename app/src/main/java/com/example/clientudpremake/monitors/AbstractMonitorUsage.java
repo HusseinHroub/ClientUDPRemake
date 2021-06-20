@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
-
 import com.example.clientudpremake.R;
 import com.example.clientudpremake.models.UsageModel;
 import com.example.clientudpremake.utilites.AnimationUtils;

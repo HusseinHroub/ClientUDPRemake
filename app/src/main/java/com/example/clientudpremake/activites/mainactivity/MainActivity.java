@@ -1,11 +1,13 @@
 package com.example.clientudpremake.activites.mainactivity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.example.clientudpremake.R;
@@ -19,6 +21,7 @@ import com.example.clientudpremake.commands.senders.BroadcastSenderCommand;
 import com.example.clientudpremake.popups.FadeOutPopup;
 import com.example.clientudpremake.popups.MonitorPopup;
 import com.example.clientudpremake.popups.PopUps;
+import com.example.clientudpremake.services.FileTransferManager;
 import com.example.clientudpremake.utilites.AddressesUtility;
 import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
@@ -35,6 +38,7 @@ import static com.example.clientudpremake.workers.websocket.WebSocketCommandsFac
 
 public class MainActivity extends ActivityStateObservable implements NavigationView.OnNavigationItemSelectedListener, WifiStateObserver {
     private static final String IS_SERVER_ON = "isServerOn";
+    private static final int CHOOSE_FILE_REQUEST_CODE = 11;
     private List<PopUps> popUps;
 
     @Override
@@ -102,6 +106,13 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
         getReceiveCommand(message).apply(this);
     }
 
+    public void viewChooseFileExplorer(View view) {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.setType("*/*");
+        chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+        startActivityForResult(chooseFile, CHOOSE_FILE_REQUEST_CODE);
+    }
+
     private Command getReceiveCommand(String message) {
         switch (message) {
             case IS_SERVER_ON:
@@ -118,7 +129,8 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
                 findViewById(R.id.restartButton),
                 findViewById(R.id.imageButton),
                 findViewById(R.id.monitor_cpu_usage_button),
-                findViewById(R.id.monitor_memory_usage_button)};
+                findViewById(R.id.monitor_memory_usage_button),
+                findViewById(R.id.send_file_button)};
     }
 
     @Override
@@ -126,6 +138,15 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
         boolean wasPopupRemoved = removePopup();
         if (!wasPopupRemoved) {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CHOOSE_FILE_REQUEST_CODE && resultCode == RESULT_OK) {
+            FileTransferManager fileTransferManager = new FileTransferManager(this, data.getData());
+            fileTransferManager.sendFileToServer();
         }
     }
 

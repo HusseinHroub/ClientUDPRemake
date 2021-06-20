@@ -23,21 +23,15 @@
         android:padding="20dp">
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Please wait..."
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:id="@+id/sending_file_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sending File:" />
 
         <ProgressBar
-            android:id="@+id/progress_bar_circular"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:minWidth="40dp"
-            android:minHeight="40dp"
-            android:scrollbarSize="4dp"
-            android:visibility="visible" />
-
+            android:id="@+id/progress_bar_hor"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </FrameLayout>

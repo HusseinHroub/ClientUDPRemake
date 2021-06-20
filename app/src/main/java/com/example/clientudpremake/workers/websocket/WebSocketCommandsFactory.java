@@ -31,6 +31,7 @@ public class WebSocketCommandsFactory {
     public static final String RESTART_MESSAGE = "restart";
     public static final String TYPE = "type";
     public static final String BINARY_IMAGE = "binaryImage";
+    public static final String FILE_TRANSFER = "fileTransfer";
 
     public static final MonitorUsages monitorUsages = new MonitorUsages();
     public static final Map<Integer, Command> sendCommands = new HashMap<>();
