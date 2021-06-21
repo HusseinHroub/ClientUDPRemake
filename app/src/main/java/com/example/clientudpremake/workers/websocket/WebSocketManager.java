@@ -58,4 +58,8 @@ public enum WebSocketManager {
     public void sendText(String text) {
         webSocket.sendText(text);
     }
+
+    public void sendBinary(byte[] buf) {
+        webSocket.sendBinary(buf);
+    }
 }

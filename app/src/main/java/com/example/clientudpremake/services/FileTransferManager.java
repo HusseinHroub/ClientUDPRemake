@@ -3,11 +3,14 @@ package com.example.clientudpremake.services;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.clientudpremake.R;
 import com.example.clientudpremake.models.FileTransferModel;
@@ -20,9 +23,10 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
-import org.apache.commons.codec.binary.Base64;
-
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +48,7 @@ public class FileTransferManager extends WebSocketAdapter {
         progressBarDialog = activity.findViewById(R.id.progress_dialog);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void sendFileToServer() {
         try {
             FileInformation fileInformation = getFileName();
@@ -87,11 +92,13 @@ public class FileTransferManager extends WebSocketAdapter {
         return name;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startSendingProcess(FileInformation fileInformation) {
         final TextView textView = activity.findViewById(R.id.sending_file_text_view);
         handler.post(() -> textView.setText("Sending File: " + fileInformation.fileName));
         WebSocketManager.INSTANCE.getWebSocket().addListener(this);
         try (InputStream inputStream = activity.getContentResolver().openInputStream(uri)) {
+            long startTime = System.currentTimeMillis();
             handler.post(() -> progressBarDialog.setVisibility(View.VISIBLE));
             progressBar.setProgress(0);
             long fileSize = fileInformation.fileSize;
@@ -100,25 +107,34 @@ public class FileTransferManager extends WebSocketAdapter {
             int remaining = (int) (fileSize % bytesPerSplit);
             long latestFrame = remaining == 0 ? numberOfSplits - 1 : numberOfSplits;
             for (long i = 0; i < numberOfSplits; i++) {
-                byte[] buf = new byte[bytesPerSplit];
-                if (inputStream.read(buf) != -1) {
-                    String json = new Gson().toJson(new FileTransferModel(Base64.encodeBase64String(buf), fileInformation.fileName, i, latestFrame, id));
-                    WebSocketManager.INSTANCE.sendText(json);
+                String json = new Gson().toJson(new FileTransferModel(fileInformation.fileName, i, latestFrame, id));
+                byte[] buf = new byte[Integer.BYTES + json.length() + bytesPerSplit];
+                if (inputStream.read(buf, Integer.BYTES + json.length(), bytesPerSplit) != -1) {
+                    byte[] jsonArray = json.getBytes(StandardCharsets.UTF_8);
+                    byte[] jsonArrayLength = getByteFromInteger(jsonArray.length);
+                    System.arraycopy(jsonArrayLength, 0, buf, 0, jsonArrayLength.length);
+                    System.arraycopy(jsonArray, 0, buf, jsonArrayLength.length, jsonArray.length);
+                    WebSocketManager.INSTANCE.sendBinary(buf);
                 } else {
                     LogUtility.log(("Finished all splits with no remaining"));
                     break;
                 }
             }
             if (remaining > 0) {
-                byte[] buf = new byte[remaining];
-                if (inputStream.read(buf) != -1) {
-                    String json = new Gson().toJson(new FileTransferModel(Base64.encodeBase64String(buf), fileInformation.fileName, latestFrame, latestFrame, id));
-                    WebSocketManager.INSTANCE.sendText(json);
+                String json = new Gson().toJson(new FileTransferModel(fileInformation.fileName, latestFrame, latestFrame, id));
+                byte[] buf = new byte[Integer.BYTES + json.length() + remaining];
+                if (inputStream.read(buf, Integer.BYTES + json.length(), remaining) != -1) {
+                    byte[] jsonArray = json.getBytes(StandardCharsets.UTF_8);
+                    byte[] jsonArrayLength = getByteFromInteger(jsonArray.length);
+                    System.arraycopy(jsonArrayLength, 0, buf, 0, jsonArrayLength.length);
+                    System.arraycopy(jsonArray, 0, buf, jsonArrayLength.length, jsonArray.length);
+                    WebSocketManager.INSTANCE.sendBinary(buf);
                     LogUtility.log(("finished all splits with remaining: " + remaining));
                 } else {
                     LogUtility.log("Finished all splits with no remaining");
                 }
             }
+            LogUtility.log("Ended in: " + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
         } catch (Exception e) {
             LogUtility.log("An exception occurred while trying to send file: " + fileInformation.fileName + " to server: " + e.getMessage());
             e.printStackTrace();
@@ -131,7 +147,8 @@ public class FileTransferManager extends WebSocketAdapter {
 
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) {
-        FileTransferModel fileTransferModel = new Gson().fromJson(frame.getPayloadText(), FileTransferModel.class);
+        String jsonString = getJsonString(frame);
+        FileTransferModel fileTransferModel = new Gson().fromJson(jsonString, FileTransferModel.class);
         updateProgressBar(fileTransferModel.getFrame(), fileTransferModel.getLatestFrame());
         if (fileTransferModel.getFrame() == fileTransferModel.getLatestFrame()) {
             WebSocketManager.INSTANCE.getWebSocket().removeListener(this);
@@ -143,9 +160,34 @@ public class FileTransferManager extends WebSocketAdapter {
         }
     }
 
+    private String getJsonString(WebSocketFrame frame) {
+        byte[] payload = frame.getPayload();
+        int sizeToRead = getSizeToRead(payload);
+        return new String(Arrays.copyOfRange(payload, Integer.BYTES, sizeToRead + Integer.BYTES));
+    }
+
+    private int getSizeToRead(byte[] payload) {
+        byte[] integerArray = new byte[Integer.BYTES];
+        System.arraycopy(payload, 0, integerArray, 0, integerArray.length);
+        return bytesToInteger(integerArray);
+    }
+
     @RequiredArgsConstructor
     private static class FileInformation {
         private final String fileName;
         private final long fileSize;
+    }
+
+    private byte[] getByteFromInteger(int integer) {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.putInt(integer);
+        return buffer.array();
+    }
+
+    public static int bytesToInteger(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.put(bytes);
+        buffer.flip();//need flip
+        return buffer.getInt();
     }
 }
