@@ -8,8 +8,6 @@ import com.example.clientudpremake.R;
 import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.commands.DummyCommand;
 import com.example.clientudpremake.commands.ToastCommand;
-import com.example.clientudpremake.commands.receivers.LoadingDialogReceiveCommand;
-import com.example.clientudpremake.commands.receivers.ScreenShotCommand;
 import com.example.clientudpremake.commands.senders.LoadingDialogSendCommand;
 import com.example.clientudpremake.commands.senders.WebSocketSenderButton;
 import com.example.clientudpremake.models.StandardModel;
@@ -57,13 +55,6 @@ public class WebSocketCommandsFactory {
                 return new ToastCommand("Monitor is off");
             case TURN_ON_MONITOR_MESSAGE:
                 return new ToastCommand("Monitor is on");
-            case CAPTURE_SCREEN_SHOT:
-                try {
-                    return new LoadingDialogReceiveCommand(new ScreenShotCommand(jsonObject.getString(BINARY_IMAGE)));
-                } catch (JSONException e) {
-                    LogUtility.log("Exception occured while intlizing ScreenShotCOmmand");
-                    e.printStackTrace();
-                }
             case MonitorUsages.GET_CPU_USAGE:
             case MonitorUsages.GET_MEMORY_USAGE:
                 try {
@@ -73,7 +64,6 @@ public class WebSocketCommandsFactory {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             default:
                 return new DummyCommand();
         }

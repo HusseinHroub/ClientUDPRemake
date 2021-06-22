@@ -36,13 +36,19 @@ public class MyWSClient extends WebSocketAdapter {
     }
 
     @Override
+    public void onBinaryMessage(WebSocket websocket, byte[] binary) {
+        LogUtility.log("Received images bytes");
+        handler.post(() -> BinaryCommands.apply(activity, binary));//currently any binary message means its a screenshot.
+    }
+
+    @Override
     public void onError(WebSocket websocket, WebSocketException cause) {
         LogUtility.log("An error occurred in websocket conneection, cause is: " + cause.getMessage());
     }
 
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
-        LogUtility.log("Sent frame: " + frame.getPayloadText());
+//        LogUtility.log("Sent frame: " + frame.getPayloadText());
     }
 
     @Override

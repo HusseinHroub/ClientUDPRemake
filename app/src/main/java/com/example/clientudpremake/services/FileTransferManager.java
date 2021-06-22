@@ -120,6 +120,7 @@ public class FileTransferManager extends WebSocketAdapter {
                     break;
                 }
             }
+            LogUtility.log("Finished splitting: " + numberOfSplits);
             if (remaining > 0) {
                 String json = new Gson().toJson(new FileTransferModel(fileInformation.fileName, latestFrame, latestFrame, id));
                 byte[] buf = new byte[Integer.BYTES + json.length() + remaining];
