@@ -33,8 +33,7 @@ public class ReceiveWorker implements Runnable {
                 DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length);
                 datagramSocket.receive(datagramPacket);
                 String message = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
-                AddressesUtility.setServerAddress(datagramPacket.getAddress());
-                handler.post(() -> receiveCommand.receive(message));
+                handler.post(() -> receiveCommand.receive(new UDPMessage(message, datagramPacket.getAddress())));
                 LogUtility.log("Received message from UDP with content: " + message);
             } catch (IOException e) {
                 LogUtility.log("An error occurred while trying to receive from UDP connection");

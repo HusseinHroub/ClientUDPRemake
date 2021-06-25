@@ -47,7 +47,12 @@ public class MyWSClient extends WebSocketAdapter {
 
     @Override
     public void onError(WebSocket websocket, WebSocketException cause) {
-        LogUtility.log("An error occurred in websocket conneection, cause is: " + cause.getMessage());
+        LogUtility.log("onError websocket, cause is: " + cause.getMessage());
+    }
+
+    @Override
+    public void onConnectError(WebSocket websocket, WebSocketException exception) {
+        LogUtility.log("On connect error: " + exception.getMessage());
     }
 
     @Override
@@ -62,7 +67,12 @@ public class MyWSClient extends WebSocketAdapter {
             for (View button : buttons) {
                 button.setEnabled(false);
             }
-            ToastUtility.showMessage("Disconnected from server", activity);
+            if (closedByServer) {
+                ToastUtility.showMessage("Server got closed", activity);
+            } else {
+                ToastUtility.showMessage("Lost connection with server", activity);
+            }
+
         });
         super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
     }

@@ -1,5 +1,8 @@
 package com.example.clientudpremake.workers.websocket;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 import com.neovisionaries.ws.client.WebSocket;
@@ -12,8 +15,14 @@ import java.io.IOException;
 public enum WebSocketManager {
     INSTANCE;
 
+    private static final int CONNECTION_TIMEOUT = 5000;
     private WebSocket webSocket;
     private String currentServerURI;
+    private Handler handler;
+
+    WebSocketManager() {
+        handler = new Handler(Looper.getMainLooper());
+    }
 
     public void connectToServer(String serverURI, WebSocketListener webSocketListener) throws IOException {
         if (isAlreadyConnectedToServer()) {
@@ -27,6 +36,7 @@ public enum WebSocketManager {
         LogUtility.log("Connecting to websocket with serverURI: " + serverURI);
         currentServerURI = serverURI;
         webSocket = new WebSocketFactory()
+                .setConnectionTimeout(CONNECTION_TIMEOUT)
                 .createSocket(serverURI)
                 .addListener(webSocketListener);
         connect();

@@ -12,15 +12,25 @@ public class AddressesUtility {
     private static InetAddress serverAddress;
     private static InetAddress broadcastAddress;
 
-    public static InetAddress getServerAddress() {
-        if (serverAddress == null)
-            throw new RuntimeException("Server address isn't set");
+    synchronized public static InetAddress getServerAddress(Context context) {
+        if (serverAddress == null) {
+            String serverAddressFromShared = MySharedPrefrences.getServerAddress(context);
+            LogUtility.log("SharedServerAddress value is: " + serverAddressFromShared);
+            if (serverAddressFromShared != null) {
+                try {
+                    serverAddress = InetAddress.getByName(serverAddressFromShared);
+                } catch (UnknownHostException e) {
+                    LogUtility.log("Couldn't parse server address: " + serverAddressFromShared);
+                    e.printStackTrace();
+                }
+            }
+        }
         return serverAddress;
     }
 
-    public static void setServerAddress(InetAddress serverAddress) {
-
+    public static void setServerAddress(InetAddress serverAddress, Context context) {
         AddressesUtility.serverAddress = serverAddress;
+        MySharedPrefrences.setServerAddress(context, serverAddress.getHostAddress());
         LogUtility.log("Initialized server address to the value: " + serverAddress.toString());
     }
 

@@ -15,7 +15,7 @@ import com.example.clientudpremake.activites.ActivityStateObservable;
 import com.example.clientudpremake.broadcasts.BroadcastRegisterManager;
 import com.example.clientudpremake.broadcasts.wifi.WifiBroadcastReceiver;
 import com.example.clientudpremake.broadcasts.wifi.WifiStateObserver;
-import com.example.clientudpremake.commands.Command;
+import com.example.clientudpremake.commands.UDPCommand;
 import com.example.clientudpremake.commands.receivers.ServerOnReceiveCommand;
 import com.example.clientudpremake.commands.senders.BroadcastSenderCommand;
 import com.example.clientudpremake.popups.FadeOutPopup;
@@ -29,6 +29,7 @@ import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 import com.example.clientudpremake.utilites.ToastUtility;
 import com.example.clientudpremake.workers.ReceiveWorker;
+import com.example.clientudpremake.workers.UDPMessage;
 import com.example.clientudpremake.workers.websocket.WebSocketManager;
 import com.google.android.material.navigation.NavigationView;
 
@@ -64,7 +65,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
 
     private void initReceiveWorker() {
         try {
-            ThreadsUtilty.getExecutorService().execute(new ReceiveWorker(this::receiveMessage));
+            ThreadsUtilty.getExecutorService().execute(new ReceiveWorker(this::udpReceiveMessage));
             LogUtility.log("Receive worked initialized");
         } catch (SocketException e) {
             e.printStackTrace();
@@ -85,7 +86,11 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
             LogUtility.log("Wifi is enabled");
             if (!WebSocketManager.INSTANCE.isAlreadyConnectedToServer()) {
                 AddressesUtility.initBroadcastAddress(this);
-                new BroadcastSenderCommand("isServerOn").apply(this);
+                if (AddressesUtility.getServerAddress(this) != null) {
+                    new ServerOnReceiveCommand(getActivityButtons()).connectToServer(this);
+                } else {
+                    new BroadcastSenderCommand("isServerOn").apply(this);
+                }
             }
         }
     }
@@ -100,8 +105,8 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
         monitorUsages.sendMonitorRequest(button.getId());
     }
 
-    public void receiveMessage(String message) {
-        getReceiveCommand(message).apply(this);
+    public void udpReceiveMessage(UDPMessage udpMessage) {
+        getReceiveCommand(udpMessage.getContent()).apply(this, udpMessage);
     }
 
     public void viewChooseFileExplorer(View view) {
@@ -111,7 +116,7 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
         startActivityForResult(chooseFile, CHOOSE_FILE_REQUEST_CODE);
     }
 
-    private Command getReceiveCommand(String message) {
+    private UDPCommand getReceiveCommand(String message) {
         switch (message) {
             case IS_SERVER_ON:
                 return new ServerOnReceiveCommand(getActivityButtons());
