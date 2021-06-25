@@ -1,7 +1,6 @@
 package com.example.clientudpremake.commands.receivers;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.View;
 
 import com.example.clientudpremake.commands.Command;
@@ -21,10 +20,7 @@ public class ServerOnReceiveCommand implements Command {
     @Override
     public void apply(Activity activity) {
         try {
-            WebSocketManager.INSTANCE.connectToServer(getServerEndPoint(), new MyWSClient(activity));
-            for (View button : buttons) {
-                button.setEnabled(true);
-            }
+            WebSocketManager.INSTANCE.connectToServer(getServerEndPoint(), new MyWSClient(buttons, activity));
         } catch (IOException e) {
             e.printStackTrace();
         }

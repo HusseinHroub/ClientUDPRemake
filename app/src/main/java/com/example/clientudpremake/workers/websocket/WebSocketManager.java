@@ -6,7 +6,6 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketListener;
-import com.neovisionaries.ws.client.WebSocketState;
 
 import java.io.IOException;
 
@@ -33,9 +32,9 @@ public enum WebSocketManager {
         connect();
     }
 
-    private boolean isAlreadyConnectedToServer() {
+    public boolean isAlreadyConnectedToServer() {
         return webSocket != null &&
-                webSocket.getState() == WebSocketState.OPEN &&
+                webSocket.isOpen() &&
                 webSocket.getURI().toString().equals(currentServerURI);
     }
 

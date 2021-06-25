@@ -3,8 +3,10 @@ package com.example.clientudpremake.workers.websocket;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 
 import com.example.clientudpremake.utilites.LogUtility;
+import com.example.clientudpremake.utilites.ToastUtility;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
@@ -19,9 +21,11 @@ import java.util.Map;
 public class MyWSClient extends WebSocketAdapter {
     private Handler handler;
     private Activity activity;
+    private View[] buttons;
 
-    public MyWSClient(Activity activity) {
+    public MyWSClient(View[] buttons, Activity activity) {
         this.activity = activity;
+        this.buttons = buttons;
         handler = new Handler(Looper.getMainLooper());
     }
 
@@ -54,12 +58,23 @@ public class MyWSClient extends WebSocketAdapter {
     @Override
     public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
         LogUtility.log("Disconnected from webscoket");
+        handler.post(() -> {
+            for (View button : buttons) {
+                button.setEnabled(false);
+            }
+            ToastUtility.showMessage("Disconnected from server", activity);
+        });
         super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
     }
 
     @Override
     public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
         LogUtility.log("Connected to websocket!");
+        handler.post(() -> {
+            for (View button : buttons) {
+                button.setEnabled(true);
+            }
+        });
     }
 
 }

@@ -22,11 +22,14 @@ import com.example.clientudpremake.popups.FadeOutPopup;
 import com.example.clientudpremake.popups.MonitorPopup;
 import com.example.clientudpremake.popups.PopUps;
 import com.example.clientudpremake.services.FileTransferManager;
+import com.example.clientudpremake.services.PCWaker;
 import com.example.clientudpremake.utilites.AddressesUtility;
+import com.example.clientudpremake.utilites.DialogUtility;
 import com.example.clientudpremake.utilites.LogUtility;
 import com.example.clientudpremake.utilites.ThreadsUtilty;
 import com.example.clientudpremake.utilites.ToastUtility;
 import com.example.clientudpremake.workers.ReceiveWorker;
+import com.example.clientudpremake.workers.websocket.WebSocketManager;
 import com.google.android.material.navigation.NavigationView;
 
 import java.net.SocketException;
@@ -78,17 +81,12 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
         if (!enabled) {
             LogUtility.log("Wifi is disabled");
             ToastUtility.showMessage("Wifi must be enabled in order to work.", this);
-            setButtonsEnabled(false);
         } else {
             LogUtility.log("Wifi is enabled");
-            AddressesUtility.initBroadcastAddress(this);
-            new BroadcastSenderCommand("isServerOn").apply(this);
-        }
-    }
-
-    private void setButtonsEnabled(boolean enabled) {
-        for (View view : getActivityButtons()) {
-            view.setEnabled(enabled);
+            if (!WebSocketManager.INSTANCE.isAlreadyConnectedToServer()) {
+                AddressesUtility.initBroadcastAddress(this);
+                new BroadcastSenderCommand("isServerOn").apply(this);
+            }
         }
     }
 
@@ -120,6 +118,11 @@ public class MainActivity extends ActivityStateObservable implements NavigationV
             default:
                 throw new RuntimeException("No command found for receiving");
         }
+    }
+
+    public void wakePC(View view) {
+        PCWaker pcWaker = new PCWaker("##");
+        DialogUtility.showConfirmationDialog(this, () -> pcWaker.wake(this));
     }
 
     private View[] getActivityButtons() {
