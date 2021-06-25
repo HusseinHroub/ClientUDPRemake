@@ -68,23 +68,21 @@
                 android:id="@+id/wakeButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="sendWebSocketMessage"
+                android:onClick="wakePC"
                 android:text="@string/wakepc" />
 
             <Button
                 android:id="@+id/restartButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/holo_purple"
                 android:enabled="false"
                 android:onClick="sendWebSocketMessage"
-                android:text="@string/rrpc" />
+                android:text="Restart PC" />
 
             <Button
                 android:id="@+id/shutButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
                 android:enabled="false"
                 android:onClick="sendWebSocketMessage"
                 android:text="@string/shutpc" />

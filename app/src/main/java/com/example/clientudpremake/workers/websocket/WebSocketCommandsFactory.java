@@ -8,6 +8,7 @@ import com.example.clientudpremake.R;
 import com.example.clientudpremake.commands.Command;
 import com.example.clientudpremake.commands.DummyCommand;
 import com.example.clientudpremake.commands.ToastCommand;
+import com.example.clientudpremake.commands.senders.ConfirmationDialogSendCommand;
 import com.example.clientudpremake.commands.senders.LoadingDialogSendCommand;
 import com.example.clientudpremake.commands.senders.WebSocketSenderButton;
 import com.example.clientudpremake.models.StandardModel;
@@ -28,8 +29,6 @@ public class WebSocketCommandsFactory {
     public static final String CAPTURE_SCREEN_SHOT = "captureDesktopScreenshot";
     public static final String RESTART_MESSAGE = "restart";
     public static final String TYPE = "type";
-    public static final String BINARY_IMAGE = "binaryImage";
-    public static final String FILE_TRANSFER = "fileTransfer";
 
     public static final MonitorUsages monitorUsages = new MonitorUsages();
     public static final Map<Integer, Command> sendCommands = new HashMap<>();
@@ -37,8 +36,8 @@ public class WebSocketCommandsFactory {
     static {
         sendCommands.put(R.id.turnOnMButton, new WebSocketSenderButton(StandardModel.builder().type(TURN_ON_MONITOR_MESSAGE).build()));
         sendCommands.put(R.id.turnOffMButton, new WebSocketSenderButton(StandardModel.builder().type(TURN_OFF_MONITOR_MESSAGE).build()));
-        sendCommands.put(R.id.shutButton, new WebSocketSenderButton(StandardModel.builder().type(IS_SERVER_ON).build()));
-        sendCommands.put(R.id.restartButton, new WebSocketSenderButton(StandardModel.builder().type(RESTART_MESSAGE).build()));
+        sendCommands.put(R.id.shutButton, new ConfirmationDialogSendCommand(new WebSocketSenderButton(StandardModel.builder().type(IS_SERVER_ON).build())));
+        sendCommands.put(R.id.restartButton, new ConfirmationDialogSendCommand(new WebSocketSenderButton(StandardModel.builder().type(RESTART_MESSAGE).build())));
         sendCommands.put(R.id.imageButton, new LoadingDialogSendCommand(new WebSocketSenderButton(StandardModel.builder().type(CAPTURE_SCREEN_SHOT).build())));
     }
 
